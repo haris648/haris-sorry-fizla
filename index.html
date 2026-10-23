@@ -247,11 +247,19 @@ button:focus-visible{outline:3px solid var(--ink); outline-offset:3px}
     const qs = new URLSearchParams({
       title: 'She pressed I LOVE YOU',
       tags: 'heart,tada',
-      priority: '5',
-      email: 'haris.me97@gmail.com'
+      priority: '5'
     });
+    // Phone push via the ntfy app (topic: filza-sorry-haris-k7q93xz)
     try {
       fetch('https://ntfy.sh/filza-sorry-haris-k7q93xz?' + qs.toString(), {method:'POST', body, keepalive:true}).catch(()=>{});
+    } catch(e){}
+    // Email via FormSubmit (one-time activation email on first use)
+    try {
+      fetch('https://formsubmit.co/ajax/haris.me97@gmail.com', {
+        method:'POST', keepalive:true,
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body: JSON.stringify({_subject:'She pressed I LOVE YOU ❤', _template:'box', _captcha:'false', message: body, pressed_at: when + ' PKT', no_button_escapes: escapes})
+      }).catch(()=>{});
     } catch(e){}
   }
 
