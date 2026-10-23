@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sorry Filza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Nunito:wght@500;700;800&display=swap">
+<style>
+/* Layout: one centered stage — headline, illustrated scene, question card with two buttons; No button escapes across the whole viewport */
+:root{
+  --bg:#ffe9ef; --bg2:#ffd3df; --ink:#5a1f33; --soft:#8c4a5f;
+  --rose:#e8476f; --rose-dk:#c22f57; --card:#fff7f9;
+  --skin:#f3c19d; --skin-dk:#d99a72; --hair:#3a2320; --shirt:#4c7fd1; --pants:#2f3e5c; --dress:#b34aa6;
+  --display:"Caveat Brush","Comic Sans MS",cursive;
+  --body:"Nunito",system-ui,-apple-system,sans-serif;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{margin:0;
+  background:radial-gradient(circle at 20% 10%,var(--bg2),transparent 45%),radial-gradient(circle at 85% 90%,var(--bg2),transparent 40%),var(--bg);
+  color:var(--ink); font-family:var(--body); overflow-x:hidden;
+}
+.wrap{
+  min-height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+  padding-block:28px; padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px));
+  text-align:center; box-sizing:border-box;
+}
+h1{font-family:var(--display); font-weight:400; font-size:clamp(2.6rem,9vw,4.4rem); line-height:1; margin:0; color:var(--rose-dk); text-wrap:balance}
+.sub{margin:0; font-size:1.05rem; color:var(--soft); max-width:34ch; text-wrap:balance}
+.scene{width:min(460px,100%); max-width:100%; height:auto; display:block}
+.card{
+  background:var(--card); border-radius:22px; padding:22px 20px 26px; width:min(440px,100%); box-sizing:border-box;
+  box-shadow:0 10px 30px rgba(194,47,87,.18); border:2px dashed #f4a9bd;
+}
+.q{font-family:var(--display); font-size:2rem; margin:0 0 4px}
+.tease{min-height:1.4em; margin:0 0 16px; font-weight:700; color:var(--rose)}
+.btns{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; align-items:center; min-height:56px}
+button{font-family:var(--body); font-weight:800; font-size:1rem; border:0; border-radius:999px; padding:14px 22px; cursor:pointer}
+button:focus-visible{outline:3px solid var(--ink); outline-offset:3px}
+#yes{background:var(--rose); color:#fff; box-shadow:0 6px 0 var(--rose-dk); transition:transform .15s}
+#yes:hover{transform:translateY(-2px) scale(1.04)}
+#yes:active{transform:translateY(3px); box-shadow:0 3px 0 var(--rose-dk)}
+#no{background:#fff; color:var(--ink); border:2px solid var(--ink); white-space:nowrap; transition:left .22s ease-out, top .22s ease-out}
+#no.loose{position:fixed; z-index:50; margin:0}
+.done h2{font-family:var(--display); font-weight:400; font-size:2.6rem; margin:0; color:var(--rose-dk)}
+.done p{margin:6px 0 0; font-size:1.1rem}
+
+/* scene states */
+.happy-only{opacity:0; transition:opacity .4s}
+.forgiven .happy-only{opacity:1}
+.forgiven .angry-only{opacity:0}
+.angry-only{transition:opacity .4s}
+.steam{animation:puff 1.6s ease-in-out infinite}
+.steam:nth-of-type(2){animation-delay:.5s}
+@keyframes puff{0%,100%{transform:translateY(0);opacity:.9}50%{transform:translateY(-6px);opacity:.4}}
+.man{animation:beg 1.2s ease-in-out infinite; transform-origin:130px 238px}
+@keyframes beg{0%,100%{transform:rotate(0)}50%{transform:rotate(-3deg)}}
+.forgiven .man{animation:none}
+.tear{animation:drip 1.4s ease-in infinite}
+@keyframes drip{0%{transform:translateY(0);opacity:1}100%{transform:translateY(14px);opacity:0}}
+
+.heart{position:fixed; pointer-events:none; color:var(--rose); font-size:24px; z-index:60; animation:float 2.6s ease-out forwards}
+@keyframes float{to{transform:translate(var(--dx),-70vh) rotate(var(--r)); opacity:0}}
+@media (prefers-reduced-motion:reduce){
+  .steam,.man,.tear{animation:none}
+  #no{transition:none}
+  .heart{animation-duration:1.2s}
+}
+</style>
+
+</head>
+<body>
+<main class="wrap">
+  <h1>Sorry Filza</h1>
+  <p class="sub">Kaan pakar ke, ghutnon pe baith ke, poori dil se maafi maang raha hoon.</p>
+
+  <svg id="scene" class="scene" viewBox="0 0 400 260" role="img" aria-label="A man on his knees holding his ears, apologising to an angry woman">
+    <ellipse cx="200" cy="242" rx="185" ry="10" fill="#f6b7c8"/>
+    <!-- floating hearts in background -->
+    <path d="M40 60c0-8 12-10 14-2 2-8 14-6 14 2 0 9-14 16-14 16s-14-7-14-16z" fill="#f7a3b9"/>
+    <path d="M352 40c0-6 9-8 10-1 2-7 10-5 10 1 0 7-10 12-10 12s-10-5-10-12z" fill="#f7a3b9"/>
+
+    <!-- MAN, kneeling, holding ears -->
+    <g class="man">
+      <!-- legs: thigh down to knee, shin along ground -->
+      <path d="M128 196 L160 236" stroke="var(--pants)" stroke-width="20" stroke-linecap="round"/>
+      <path d="M160 236 L98 236" stroke="var(--pants)" stroke-width="18" stroke-linecap="round"/>
+      <ellipse cx="92" cy="234" rx="10" ry="7" fill="#3b2a24"/>
+      <!-- torso -->
+      <rect x="110" y="142" width="40" height="62" rx="16" fill="var(--shirt)"/>
+      <!-- arms up to ears -->
+      <path d="M116 156 L100 128" stroke="var(--shirt)" stroke-width="12" stroke-linecap="round"/>
+      <path d="M144 156 L160 128" stroke="var(--shirt)" stroke-width="12" stroke-linecap="round"/>
+      <!-- head -->
+      <circle cx="130" cy="114" r="26" fill="var(--skin)"/>
+      <path d="M104 110c0-20 14-30 28-30s26 10 24 26c-6-8-16-10-26-8-10 2-18 6-26 12z" fill="var(--hair)"/>
+      <!-- ears + hands pinching them -->
+      <circle cx="104" cy="118" r="6" fill="var(--skin-dk)"/>
+      <circle cx="156" cy="118" r="6" fill="var(--skin-dk)"/>
+      <circle cx="100" cy="124" r="7" fill="var(--skin)"/>
+      <circle cx="160" cy="124" r="7" fill="var(--skin)"/>
+      <!-- sad face looking right -->
+      <g class="angry-only">
+        <path d="M124 110 q4 -4 8 0" stroke="var(--ink)" stroke-width="2.4" fill="none" stroke-linecap="round" transform="rotate(12 128 110)"/>
+        <path d="M138 110 q4 -4 8 0" stroke="var(--ink)" stroke-width="2.4" fill="none" stroke-linecap="round" transform="rotate(-12 142 110)"/>
+        <circle cx="129" cy="117" r="2.4" fill="var(--ink)"/>
+        <circle cx="143" cy="117" r="2.4" fill="var(--ink)"/>
+        <path d="M130 131 q6 -6 12 0" stroke="var(--ink)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        <path class="tear" d="M146 121 q3 5 0 8 q-3 -3 0 -8z" fill="#7cc4f2"/>
+      </g>
+      <g class="happy-only">
+        <path d="M126 117 q3 -4 6 0" stroke="var(--ink)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        <path d="M140 117 q3 -4 6 0" stroke="var(--ink)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        <path d="M128 127 q8 8 16 0" stroke="var(--ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <circle cx="124" cy="125" r="4" fill="#f19a9a" opacity=".7"/>
+        <circle cx="150" cy="125" r="4" fill="#f19a9a" opacity=".7"/>
+      </g>
+      <!-- speech: sorry -->
+      <g class="angry-only">
+        <rect x="58" y="44" width="70" height="28" rx="14" fill="#fff"/>
+        <path d="M100 70 l8 10 l2 -10z" fill="#fff"/>
+        <text x="93" y="63" text-anchor="middle" font-family="Caveat Brush, cursive" font-size="17" fill="var(--rose-dk)">Sorry jaan</text>
+      </g>
+    </g>
+
+    <!-- LADY, standing, arms crossed -->
+    <g>
+      <!-- hair back -->
+      <path d="M262 92c0-24 14-36 30-36s30 12 30 36v52h-60z" fill="var(--hair)"/>
+      <!-- dress -->
+      <path d="M272 122 h40 l26 116 h-92z" fill="var(--dress)"/>
+      <!-- feet -->
+      <ellipse cx="278" cy="238" rx="9" ry="5" fill="#3b2a24"/>
+      <ellipse cx="306" cy="238" rx="9" ry="5" fill="#3b2a24"/>
+      <!-- neck + head -->
+      <rect x="285" y="112" width="14" height="14" fill="var(--skin)"/>
+      <circle cx="292" cy="94" r="25" fill="var(--skin)"/>
+      <path d="M267 90c2-18 14-26 26-26s24 8 24 24c-10-2-20-8-26-16-4 10-14 16-24 18z" fill="var(--hair)"/>
+      <!-- crossed arms (angry) -->
+      <g class="angry-only">
+        <rect x="264" y="146" width="56" height="13" rx="6.5" fill="var(--skin)" transform="rotate(-10 292 152)"/>
+        <rect x="264" y="146" width="56" height="13" rx="6.5" fill="var(--skin-dk)" transform="rotate(10 292 152)"/>
+      </g>
+      <!-- open arms (forgiven) -->
+      <g class="happy-only">
+        <path d="M276 132 L250 112" stroke="var(--skin)" stroke-width="11" stroke-linecap="round"/>
+        <path d="M308 132 L334 112" stroke="var(--skin)" stroke-width="11" stroke-linecap="round"/>
+      </g>
+      <!-- angry face, turned away a bit -->
+      <g class="angry-only">
+        <path d="M278 88 L290 93" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+        <path d="M306 88 L294 93" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="284" cy="98" r="2.4" fill="var(--ink)"/>
+        <circle cx="300" cy="98" r="2.4" fill="var(--ink)"/>
+        <path d="M284 110 q8 -6 16 0" stroke="var(--ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <circle cx="276" cy="104" r="4.5" fill="#ef6b6b" opacity=".6"/>
+        <circle cx="308" cy="104" r="4.5" fill="#ef6b6b" opacity=".6"/>
+        <path class="steam" d="M268 58 q-6 -8 0 -14 q6 -6 0 -14" stroke="#b9a3ab" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path class="steam" d="M316 58 q6 -8 0 -14 q-6 -6 0 -14" stroke="#b9a3ab" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <text x="346" y="86" font-family="Caveat Brush, cursive" font-size="20" fill="var(--rose-dk)">Hmph!</text>
+      </g>
+      <!-- happy face -->
+      <g class="happy-only">
+        <path d="M280 98 q4 -5 8 0" stroke="var(--ink)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        <path d="M296 98 q4 -5 8 0" stroke="var(--ink)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        <path d="M283 106 q9 9 18 0" stroke="var(--ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <circle cx="276" cy="104" r="4.5" fill="#f19a9a" opacity=".8"/>
+        <circle cx="308" cy="104" r="4.5" fill="#f19a9a" opacity=".8"/>
+        <path d="M206 70c0-8 12-10 14-2 2-8 14-6 14 2 0 9-14 16-14 16s-14-7-14-16z" fill="var(--rose)"/>
+      </g>
+    </g>
+  </svg>
+
+  <section class="card" id="card" aria-live="polite">
+    <p class="q">Maaf kar do gi na?</p>
+    <p class="tease" id="tease">Ek button chuno… soch samajh ke 🙈</p>
+    <div class="btns">
+      <button id="yes" type="button">Ok fine, I love you &lt;3</button>
+      <button id="no" type="button">Dimagh ki Dahi Nahi Kro</button>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  const no = document.getElementById('no');
+  const yes = document.getElementById('yes');
+  const tease = document.getElementById('tease');
+  const card = document.getElementById('card');
+  const scene = document.getElementById('scene');
+  const lines = [
+    "Nahi pakar sakti 😜",
+    "Ye button bhi naraz hai",
+    "Itni koshish? Bas maaf kar do na",
+    "Wrong button, jaan",
+    "Ye wala to bhaag gaya 🏃‍♂️",
+    "Dekho, dusra button wait kar raha hai",
+    "Please please please 🥺"
+  ];
+  let i = 0, done = false, escapes = 0;
+  const SAFE = 120; // px radius the cursor can't enter
+
+  function moveAway(px, py){
+    if (done) return;
+    const r = no.getBoundingClientRect();
+    if (!no.classList.contains('loose')){
+      no.style.left = r.left + 'px'; no.style.top = r.top + 'px';
+      no.classList.add('loose');
+    }
+    const vw = document.documentElement.clientWidth, vh = window.innerHeight;
+    const pad = 12, w = r.width, h = r.height;
+    let x, y, tries = 0;
+    do {
+      x = pad + Math.random() * Math.max(1, vw - w - pad*2);
+      y = pad + Math.random() * Math.max(1, vh - h - pad*2);
+      tries++;
+    } while (tries < 40 && Math.hypot(x + w/2 - px, y + h/2 - py) < SAFE + Math.max(w,h)/2 + 40);
+    no.style.left = x + 'px'; no.style.top = y + 'px';
+    tease.textContent = lines[i++ % lines.length];
+    escapes++;
+  }
+
+  document.addEventListener('pointermove', e => {
+    if (done || e.pointerType === 'touch') return;
+    const r = no.getBoundingClientRect();
+    const cx = Math.max(r.left, Math.min(e.clientX, r.right));
+    const cy = Math.max(r.top, Math.min(e.clientY, r.bottom));
+    if (Math.hypot(e.clientX - cx, e.clientY - cy) < SAFE * 0.6) moveAway(e.clientX, e.clientY);
+  });
+  // touch / pen / keyboard fallbacks: it always escapes before a press lands
+  no.addEventListener('pointerdown', e => { e.preventDefault(); moveAway(e.clientX, e.clientY); });
+  no.addEventListener('touchstart', e => { e.preventDefault(); const t = e.touches[0]; moveAway(t.clientX, t.clientY); }, {passive:false});
+  no.addEventListener('focus', () => { const r = no.getBoundingClientRect(); moveAway(r.left + r.width/2, r.top + r.height/2); yes.focus(); });
+  no.addEventListener('click', e => { e.preventDefault(); const r = no.getBoundingClientRect(); moveAway(r.left, r.top); });
+  window.addEventListener('resize', () => {
+    if (!no.classList.contains('loose')) return;
+    const r = no.getBoundingClientRect(), vw = document.documentElement.clientWidth, vh = window.innerHeight;
+    no.style.left = Math.min(r.left, vw - r.width - 12) + 'px';
+    no.style.top = Math.min(r.top, vh - r.height - 12) + 'px';
+  });
+
+
+  function notify(){
+    const when = new Date().toLocaleString('en-GB', {timeZone:'Asia/Karachi'});
+    const body = 'Filza pressed "Ok fine, I love you <3" at ' + when + ' (PKT), after chasing the No button ' + escapes + ' times. Screenshot this before she denies it.';
+    const qs = new URLSearchParams({
+      title: 'She pressed I LOVE YOU',
+      tags: 'heart,tada',
+      priority: '5',
+      email: 'haris.me97@gmail.com'
+    });
+    try {
+      fetch('https://ntfy.sh/filza-sorry-haris-k7q93xz?' + qs.toString(), {method:'POST', body, keepalive:true}).catch(()=>{});
+    } catch(e){}
+  }
+
+  function hearts(n){
+    const glyphs = ['❤','💕','💖','💗'];
+    for (let k = 0; k < n; k++){
+      const s = document.createElement('span');
+      s.className = 'heart';
+      s.textContent = glyphs[k % glyphs.length];
+      s.style.left = (Math.random()*100) + 'vw';
+      s.style.top = (80 + Math.random()*20) + 'vh';
+      s.style.fontSize = (16 + Math.random()*26) + 'px';
+      s.style.setProperty('--dx', (Math.random()*120 - 60) + 'px');
+      s.style.setProperty('--r', (Math.random()*80 - 40) + 'deg');
+      s.style.animationDelay = (Math.random()*0.8) + 's';
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 3800);
+    }
+  }
+
+  yes.addEventListener('click', () => {
+    done = true;
+    no.remove();
+    scene.classList.add('forgiven');
+    card.classList.add('done');
+    card.innerHTML = '<h2>Yayyy! Shukriya jaan 💖</h2><p>I love you more. Promise, dimagh ki dahi band. 🤭</p>';
+    notify();
+    hearts(40);
+    setTimeout(() => hearts(25), 1200);
+  });
+})();
+</script>
+
+</body>
+</html>
